@@ -1,0 +1,431 @@
+\documentclass[compress,8pt]{beamer}
+\usepackage[latin1]{inputenc}
+\usepackage[round,authoryear]{natbib}
+\bibliographystyle{apalike}
+
+% \usepackage[scaled]{helvet} % official font size
+
+\setbeamersize{text margin left=2em}  % <- like this
+\setbeamersize{text margin right=2em} % <- like this
+
+\usepackage{color}
+\usepackage{bm}
+\usepackage{multimedia}
+\usepackage{latexsym} 
+\usepackage{graphicx} 
+\frenchspacing 
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage[dvips]{epsfig}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{epsf}
+\usepackage{mathrsfs}
+\usepackage{bm}
+\usepackage{enumerate}
+\usepackage{subfigure}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{picture}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{indentfirst}
+\usepackage{framed,color}
+\usepackage{centernot}
+\usepackage{graphicx}
+\usepackage{animate}
+\usepackage{varwidth}
+\usepackage{xcolor}
+
+\lstset{frame=single, language=python, numberstyle=\footnotesize,
+basicstyle=\footnotesize, commentstyle=\footnotesize}
+
+\newenvironment{rcases}
+  {\left.\begin{aligned}}
+  {\end{aligned}\right\rbrace}
+  
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\usepackage{tikz}
+\newcommand{\tikzxmark}{%
+\tikz[scale=0.23] {
+    \draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+    \draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+}}
+\newcommand{\tikzcmark}{%
+\tikz[scale=0.23] {
+    \draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+    \draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+}}
+
+\usetheme{Berlin}
+\usecolortheme{dove} 
+
+\definecolor{dark_gray}{rgb}{0.3, 0.3, 0.3} 
+\definecolor{light_gray}{rgb}{0.92, 0.92, 0.92} 
+% \setbeamercolor{titlelike}{parent=structure,fg=black,bg=light_gray}
+% \setbeamercolor{frametitle}{bg=light_gray}
+% \setbeamercolor{structure}{bg=light_gray}
+\setbeamercolor{bgcolor}{fg=white,bg=dark_gray} % color footline
+\setbeamercolor{bgcolor_dark}{fg=black,bg=dark_gray} % color footline
+
+% \setbeamertemplate{headline}{\vskip40pt} % no section subsection navigation bar. Spacing after frametitle
+\setbeamertemplate{headline} % no section subsection navigation bar. Spacing after frametitle
+{
+
+\vspace{0.5cm}
+
+    \hfill \Large \color{black}\secname $\quad$
+
+    \vskip28pt
+}
+
+\setbeamertemplate{blocks}[rounded][shadow=false]
+\setbeamertemplate{footline} % add custom footline
+{
+    \hbox{%
+    \begin{beamercolorbox}[wd=0.40\paperwidth,ht=4.25ex,dp=3ex,left,leftskip=2ex]{bgcolor}Numerical retracker
+    \end{beamercolorbox}
+    \hspace{-0.75ex}\begin{beamercolorbox}[wd=0.38\paperwidth,ht=4.25ex,dp=3ex,center]{bgcolor}\hspace{3ex}\insertshorttitle
+    \end{beamercolorbox}
+    \hspace{-0.8ex}\begin{beamercolorbox}[wd=0.23\paperwidth,ht=4.25ex,dp=3ex,center]{bgcolor}$\!\!$\thedate $\quad|$ \insertframenumber{} / \inserttotalframenumber
+    \end{beamercolorbox}
+  }
+}
+
+
+
+
+\setbeamertemplate{title page}{%
+  \vbox{}
+    \vspace{-1.2cm}% NEW
+  \begingroup
+    \centering
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \usebeamerfont{title}\inserttitle\par%
+      \ifx\insertsubtitle\@empty%
+      \else%
+        \vskip0.25em%
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \fi%     
+    \end{beamercolorbox}%
+    \vspace{0.2cm}% NEW
+    \begin{beamercolorbox}[sep=8pt,center]{author}
+      \usebeamerfont{author}\insertauthor
+    \end{beamercolorbox}
+    \vspace{-0.2cm}% NEW
+    \begin{beamercolorbox}[sep=8pt,center]{date}
+      \usebeamerfont{date}\insertdate
+    \end{beamercolorbox}\vskip0.5em
+  \endgroup
+}
+
+\setbeamertemplate{background canvas}{%
+    \includegraphics[width=\paperwidth,height=\paperheight]{fig/frametitle_isardsat.pdf}
+}
+
+\beamertemplatenavigationsymbolsempty
+% \setbeamertemplate{frametitle}[default][right]  % original no title
+% \setbeamercolor{frametitle}{fg=white}  % original no title
+
+% \setbeamertemplate{frametitle}{\bfseries\insertframetitle\par\vskip-10pt\hskip-5pt} % test
+\makeatletter % with title of frame
+\setbeamertemplate{frametitle}{%
+  \ifbeamercolorempty[bg]{frametitle}{}{\nointerlineskip}%
+  \@tempdima=\textwidth%
+  \advance\@tempdima by\beamer@leftmargin%
+  \advance\@tempdima by\beamer@rightmargin%
+  \advance\@tempdima by-0.6cm% <- change value here
+  \hfill%
+  \begin{beamercolorbox}[sep=0.3cm,left,wd=\the\@tempdima]{frametitle}
+    \usebeamerfont{frametitle}%
+    \vbox{}\vskip-2ex% <- change value here
+    \if@tempswa\else\csname beamer@fteleft\endcsname\fi%
+    \strut\insertframetitle\strut\par%
+    {%
+      \ifx\insertframesubtitle\@empty%
+      \else%
+      {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\strut\insertframesubtitle\strut\par}%
+      \fi
+    }%
+    \vskip-1ex%
+    \if@tempswa\else\vskip-.3cm\fi% set inside beamercolorbox... evil here...
+  \end{beamercolorbox}%
+}
+\makeatother
+
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand\projref{\footnotesize{JC-DD-ISR-GP-0219 / JC-TR-ISR-GP-0220}}
+\newcommand\isdref{\footnotesize{ISARD\_ESA\_S6\_P4\_GPP\_ATBD\_1287 / ISARD\_ESA\_S6\_P4\_GPP\_VR\_1288}}
+\newcommand\activityref{S6 P4 L1 GPP - CCN6 Numerical Retracker AR}
+\newcommand\thedate{October 2nd, 2023}
+\subtitle[]{\medskip S6 P4 L1 GPP CCN 6 WP160 \\ \footnotesize \bigskip proj. ref: \projref \\ isardSAT ref: \isdref}
+\title[AR S6 P4 L1 GPP CCN\#6 WP160]{Annual Review numerical retracker: \\ \medskip Algorithms [D-9] and test/analysis [D-10 preliminary]}
+% \author[Alba Granados]{Alba Granados}
+\institute[IsardSAT]{}
+\date[]{October 2nd, 2023}
+
+% [D-10] Numerical retracker TDS and test/analysis report
+% proj. ref: JC-TR-ISR-GP-0220
+% isardSAT ref: ISARD_ESA_S6_P4_GPP_VR_1288
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{fig/frontcover_isardsat}}
+\begin{frame}[plain]
+\vspace{1cm}
+\titlepage
+
+\end{frame}
+}
+
+
+\begin{frame}
+\frametitle{\large Contents}
+%\textbf{Contents}
+    \tableofcontents
+\end{frame}
+
+
+
+\AtBeginSection[]
+{
+   \begin{frame}<beamer>
+\frametitle{\large Contents}
+   \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+
+
+{\bf The problem:}
+
+\begin{itemize}
+ \item The point target response (PTR) of the S6 P4 altimeter changes its shape over time: main lobe width and the asymmetry of the secondary lobes. 
+ 
+\item Analytical open ocean retracker currently implemented in the PDAP makes substantial approximations of the PTR (Gaussian). 
+
+\item It has been shown this has a strong impact on the GMSL and $H_s$ estimates, showing e.g., correlations between $H_s$ increase \& PTR width decrease \citep{Dinardo2022,Boy2022,Aublanc2021}.
+
+\end{itemize}
+
+\medskip
+
+\pause
+{\bf Possible solutions:}
+
+\medskip 
+
+$\quad$ {\Large $\tikzxmark$} Deviation between in-flight PTR and the Gaussian approximation is compensated using a static look-up-tables (LUT).   However, fully reliable estimations of the sea level trend are obtained only if LUTs are regularly updated, which cannot be done operationally. 
+
+\medskip
+
+$\quad$  {\Large $\checkmark$} A numerical convolutional model can account for the measured PTR of the instrument, so that any PTR shape evolution is thus accounted for when retrieving the parameters. 
+
+
+\end{frame}
+
+
+
+
+\section{The model}
+
+
+\begin{frame}{Fitting}
+ 
+ 
+\begin{itemize}
+ \item {\bf Fitting parameters}: Consider the three parameters vector $\bm{\theta}=(H_s, k_0, P_u)$.
+ 
+ 
+ \item {\bf Optimization problem}: The fitting parameters correspond to the solution of the constrained least-squares problem
+
+ \begin{equation*}
+\begin{aligned}
+\min_{\bm{\theta}=(H_s, k_0, P_u)\in\mathbb{R}^3} &|| \bm{\psi} - \bm{s}(\bm{\theta})||_2^2\quad = \min_{\bm{\theta}=(H_s, k_0, P_u)\in\mathbb{R}^3}\sum\limits_{j=0}^{\texttt{ZP}\cdot N_s-1}\rho_L(r_j) \\
+\text{s.t.} \quad &\quad H_s \geq 0 ,\; P_u \geq 0
+ \label{eq:lsq_problem}
+\end{aligned}
+ \end{equation*}
+with $\bm{s}(\bm{\theta})$ the model waveform vector at one surface, $\bm{\psi}$ the measured waveform, $r_j=s_j(\bm{\theta})-\psi_j$, and the loss functions $\rho_L(r_j)=r_j^2$ ($l_2$ - norm) or $\rho_L(r_j)=\text{ln}(1+r_j^2)$ 
+ 
+ \medskip
+ \centering
+\includegraphics[width=0.28\textwidth]{fig/loss_functions}  \includegraphics[width=0.28\textwidth]{fig/loss_functions_derivative}
+ 
+\end{itemize}
+
+ 
+\end{frame}
+
+
+
+\begin{frame}{Retrackers configuration and characteristics}
+
+In-house analytical retracker and Level-2 operational products are used for comparison.
+
+\medskip
+\begin{columns}
+\begin{column}{0.5\textwidth}
+
+\centering {\bf In-house analytical retracker:}
+
+\begin{itemize}
+    \item SAMOSA-based.
+
+    \item Analytical azimuth and range PTRs with no LUTs for correction.
+
+    \item Circular antenna pattern and mispointing included.
+
+    \item No ocean skewness included. %$0.1$, 
+
+    \item[--] Solver: Trust-region-reflective algorithm.
+    
+    \item[--] Initial parameters $H_s$ computed from estimates from previous surfaces, $P_u=1$, and epoch from leading edge.
+
+    \item[--] No oversampling in aziumuth and range.
+
+    \item[--] Range gates interval for fitting $[24, 261]$. % (HR RMC waveforms).
+
+ \end{itemize}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+
+\centering {\bf Numerical Retracker:}
+
+\bigskip
+\begin{itemize} 
+    \item Analytical AIR, and measured CAL1 Pulse RIR (default).
+
+    \item Circular antenna pattern and no mispointing included.
+
+    \item Ocean skewness included. %$0.1$, 
+
+    \item[--] Solver: Levenberg-Marquard.
+
+    \item[--] Initial parameters $H_s=2$, $P_u=1$, and epoch from leading edge.
+    
+    \item[--] Default oversampling in aziumuth is $10$, and $8$ in range.
+
+    \item[--] Range gates interval for fitting $[24, 261]$. % (HR RMC waveforms).
+  
+ \end{itemize}
+
+
+\end{column}
+\end{columns}
+ 
+ \bigskip
+{\bf Level-2 operational} products are also SAMOSA-based.
+ 
+\end{frame}
+
+
+
+
+\begin{frame}{Power waveforms after delay compensation and before multilooking}
+ 
+ 
+ \begin{columns}
+\begin{column}{0.45\textwidth}\centering
+
+Numerical (RIR CAL1 Pulse)
+
+  \includegraphics[width=0.9\textwidth]{fig/waveforms_dc_num_PTRnum}
+
+\end{column}
+\begin{column}{0.45\textwidth}\centering
+
+Analytical retracker
+
+\includegraphics[width=0.9\textwidth]{fig/waveforms_dc_ana_PTRana} 
+  
+\end{column}
+\end{columns}
+
+\vspace{1cm}
+\begin{itemize}
+ \item A subset of waveforms along the beams are illustrated for simplicity.
+ \item Power distributed differently along the beams in both retrackers.
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusions and next steps}
+ \begin{frame}{Conclusions}
+ 
+\begin{itemize}
+\item Results show no large differences between numerical retracker model with modelled and measured RIR, for this particular set of points.
+\item ...
+\end{itemize}
+
+\end{frame}
+%
+
+
+
+\begin{frame}{Next steps}
+\begin{itemize}
+
+\item Full assessment over one cycle of data.
+
+\item ...
+\end{itemize}
+
+\end{frame}
+%
+
+
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{fig/backcover_isardsat}}
+\begin{frame}[plain]
+ 
+ \begin{center}
+ \Large Thank you for listening!
+  \end{center}
+  
+\end{frame}
+}
+
+
+
+\section*{}
+\begin{frame}
+
+
+\textbf{References}
+
+\bigskip
+
+\tiny
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliography{library.bib}
+ 
+\end{frame}
+
+
+\end{document}
